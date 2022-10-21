@@ -180,6 +180,36 @@ E.g. kairos-agent install-bundle container:quay.io/kairos/kairos...
 		},
 	},
 	{
+		Name:        "state",
+		Usage:       "Prints the machine state",
+		Description: "Print machine state information",
+		Aliases:     []string{"state"},
+		Action: func(c *cli.Context) error {
+			fmt.Print(machine.UUID())
+			return nil
+		},
+	},
+	{
+		Name:        "apply",
+		Usage:       "Set a machine state",
+		Description: "Print machine state information",
+		Aliases:     []string{"set"},
+		Action: func(c *cli.Context) error {
+			fmt.Print(machine.UUID())
+			return nil
+		},
+	},
+	{
+		Name:        "get",
+		Usage:       "get machine state",
+		Description: "Print machine state information",
+		Aliases:     []string{"get"},
+		Action: func(c *cli.Context) error {
+			fmt.Print(machine.UUID())
+			return nil
+		},
+	},
+	{
 		Name: "interactive-install",
 		Description: `
 Starts kairos in interactive mode install.
