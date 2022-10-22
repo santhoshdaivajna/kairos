@@ -5,8 +5,12 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"sync"
 	"time"
+
+	"github.com/kairos-io/kairos/pkg/config"
+	"gopkg.in/yaml.v2"
 
 	"github.com/kairos-io/kairos/internal/bus"
 	"github.com/kairos-io/kairos/internal/cmd"
@@ -68,6 +72,22 @@ func Reset() error {
 		args = append(args, optsArgs...)
 	} else {
 		args = append(args, "--reset-persistent")
+	}
+
+	cloudInit, ok := options["cc"]
+	if !ok {
+		fmt.Println("cloudInit must be specified among options")
+		os.Exit(1)
+	}
+
+	c := &config.Config{}
+	yaml.Unmarshal([]byte(cloudInit), c) //nolint:errcheck
+
+	for _, e := range c.Install.Env {
+		pair := strings.SplitN(e, "=", 2)
+		if len(pair) >= 2 {
+			os.Setenv(pair[0], pair[1])
+		}
 	}
 
 	cmd := exec.Command("elemental", args...)
