@@ -8,6 +8,9 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/kairos-io/kairos/pkg/config"
+	"gopkg.in/yaml.v2"
+
 	events "github.com/kairos-io/kairos/sdk/bus"
 
 	"github.com/kairos-io/kairos/internal/bus"
@@ -64,7 +67,14 @@ func Upgrade(version, image string, force, debug bool) error {
 		discoveredImage = r.Data
 	})
 
-	_, err := bus.Manager.Publish(events.EventVersionImage, &events.VersionImagePayload{
+	options := map[string]string{}
+
+	err := json.Unmarshal([]byte(discoveredImage), &options)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	_, err = bus.Manager.Publish(events.EventVersionImage, &events.VersionImagePayload{
 		Version: version,
 	})
 	if err != nil {
@@ -87,6 +97,17 @@ func Upgrade(version, image string, force, debug bool) error {
 	if debug {
 		fmt.Printf("Upgrading to image: '%s'\n", img)
 	}
+
+	cloudInit, ok := options["cc"]
+	if !ok {
+		fmt.Println("cloudInit must be specified among options")
+		os.Exit(1)
+	}
+
+	c := &config.Config{}
+	yaml.Unmarshal([]byte(cloudInit), c) //nolint:errcheck
+
+	utils.SetEnv(c.Env)
 
 	args := []string{"upgrade", "--system.uri", fmt.Sprintf("docker:%s", img)}
 

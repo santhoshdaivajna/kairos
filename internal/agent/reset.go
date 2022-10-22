@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"strings"
 	"sync"
 	"time"
 
@@ -83,12 +82,7 @@ func Reset() error {
 	c := &config.Config{}
 	yaml.Unmarshal([]byte(cloudInit), c) //nolint:errcheck
 
-	for _, e := range c.Install.Env {
-		pair := strings.SplitN(e, "=", 2)
-		if len(pair) >= 2 {
-			os.Setenv(pair[0], pair[1])
-		}
-	}
+	utils.SetEnv(c.Env)
 
 	cmd := exec.Command("elemental", args...)
 	cmd.Env = os.Environ()
