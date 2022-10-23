@@ -8,11 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kairos-io/kairos/pkg/config"
-	"gopkg.in/yaml.v2"
-
 	"github.com/kairos-io/kairos/internal/bus"
 	"github.com/kairos-io/kairos/internal/cmd"
+	"github.com/kairos-io/kairos/pkg/config"
 	"github.com/kairos-io/kairos/pkg/machine"
 	"github.com/kairos-io/kairos/pkg/utils"
 	sdk "github.com/kairos-io/kairos/sdk/bus"
@@ -21,7 +19,7 @@ import (
 	"github.com/pterm/pterm"
 )
 
-func Reset() error {
+func Reset(dir ...string) error {
 	bus.Manager.Initialize()
 
 	options := map[string]string{}
@@ -73,14 +71,10 @@ func Reset() error {
 		args = append(args, "--reset-persistent")
 	}
 
-	cloudInit, ok := options["cc"]
-	if !ok {
-		fmt.Println("cloudInit must be specified among options")
-		os.Exit(1)
+	c, err := config.Scan(config.Directories(dir...))
+	if err != nil {
+		return err
 	}
-
-	c := &config.Config{}
-	yaml.Unmarshal([]byte(cloudInit), c) //nolint:errcheck
 
 	utils.SetEnv(c.Env)
 

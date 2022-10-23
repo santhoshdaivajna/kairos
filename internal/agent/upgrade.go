@@ -9,8 +9,6 @@ import (
 	"strings"
 
 	"github.com/kairos-io/kairos/pkg/config"
-	"gopkg.in/yaml.v2"
-
 	events "github.com/kairos-io/kairos/sdk/bus"
 
 	"github.com/kairos-io/kairos/internal/bus"
@@ -43,7 +41,7 @@ func ListReleases() []string {
 	return releases
 }
 
-func Upgrade(version, image string, force, debug bool) error {
+func Upgrade(version, image string, force, debug bool, dirs []string) error {
 	bus.Manager.Initialize()
 
 	if version == "" && image == "" {
@@ -67,14 +65,7 @@ func Upgrade(version, image string, force, debug bool) error {
 		discoveredImage = r.Data
 	})
 
-	options := map[string]string{}
-
-	err := json.Unmarshal([]byte(discoveredImage), &options)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	_, err = bus.Manager.Publish(events.EventVersionImage, &events.VersionImagePayload{
+	_, err := bus.Manager.Publish(events.EventVersionImage, &events.VersionImagePayload{
 		Version: version,
 	})
 	if err != nil {
@@ -98,14 +89,10 @@ func Upgrade(version, image string, force, debug bool) error {
 		fmt.Printf("Upgrading to image: '%s'\n", img)
 	}
 
-	cloudInit, ok := options["cc"]
-	if !ok {
-		fmt.Println("cloudInit must be specified among options")
-		os.Exit(1)
+	c, err := config.Scan(config.Directories(dirs...))
+	if err != nil {
+		return err
 	}
-
-	c := &config.Config{}
-	yaml.Unmarshal([]byte(cloudInit), c) //nolint:errcheck
 
 	utils.SetEnv(c.Env)
 

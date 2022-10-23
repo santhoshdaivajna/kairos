@@ -73,8 +73,8 @@ See https://kairos.io/after_install/upgrades/#manual for documentation.
 			if len(args) == 1 {
 				v = args[0]
 			}
-
-			return agent.Upgrade(v, c.String("image"), c.Bool("force"), c.Bool("debug"))
+			dirs := []string{"/oem", "/usr/local/cloud-config", "/run/initramfs/live"}
+			return agent.Upgrade(v, c.String("image"), c.Bool("force"), c.Bool("debug"), dirs)
 		},
 	},
 
@@ -272,7 +272,7 @@ This command is meant to be used from the boot GRUB menu, but can likely be used
 	{
 		Name: "reset",
 		Action: func(c *cli.Context) error {
-			return agent.Reset()
+			return agent.Reset("/oem", "/usr/local/cloud-config", "/run/initramfs/live")
 		},
 		Usage: "Starts kairos reset mode",
 		Description: `
