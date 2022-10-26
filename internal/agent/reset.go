@@ -3,6 +3,7 @@ package agent
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"os"
 	"os/exec"
 	"sync"
@@ -77,6 +78,8 @@ func Reset(dir ...string) error {
 	}
 
 	utils.SetEnv(c.Env)
+	logrus.Info("c.Env :", c.Env)
+	logrus.Info("os environ :", os.Environ())
 
 	cmd := exec.Command("elemental", args...)
 	cmd.Env = os.Environ()
