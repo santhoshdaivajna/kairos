@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -10,9 +11,12 @@ import (
 )
 
 func SH(c string) (string, error) {
+	fmt.Printf("Command %s\n", c)
 	cmd := exec.Command("/bin/sh", "-c", c)
 	cmd.Env = os.Environ()
 	o, err := cmd.CombinedOutput()
+	fmt.Printf("env %+v\n", cmd.Env)
+	fmt.Printf("Command %s %s\n", string(o), err.Error())
 	return string(o), err
 }
 
