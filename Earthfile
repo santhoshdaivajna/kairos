@@ -2,7 +2,7 @@ VERSION 0.6
 FROM alpine
 ARG VARIANT=core # core, lite, framework
 ARG FLAVOR=opensuse
-ARG IMAGE=quay.io/kairos/${VARIANT}-${FLAVOR}:latest
+ARG IMAGE=santhoshs/${VARIANT}-${FLAVOR}:latest
 ARG ISO_NAME=kairos-${VARIANT}-${FLAVOR}
 ARG LUET_VERSION=0.32.4
 ARG OS_ID=kairos

@@ -2,6 +2,7 @@ package agent
 
 import (
 	"fmt"
+	"github.com/kairos-io/kairos/pkg/utils"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -29,6 +30,8 @@ func Run(opts ...Option) error {
 	if err != nil {
 		return err
 	}
+
+	utils.SetEnv(c.Env)
 	bf := machine.BootFrom()
 	if c.Install != nil && c.Install.Auto && (bf == machine.NetBoot || bf == machine.LiveCDBoot) {
 		// Don't go ahead if we are asked to install from a booting live medium
