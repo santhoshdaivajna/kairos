@@ -32,6 +32,7 @@ func Run(opts ...Option) error {
 	}
 
 	utils.SetEnv(c.Env)
+	fmt.Println("agent environ", os.Environ())
 	bf := machine.BootFrom()
 	if c.Install != nil && c.Install.Auto && (bf == machine.NetBoot || bf == machine.LiveCDBoot) {
 		// Don't go ahead if we are asked to install from a booting live medium
@@ -64,7 +65,7 @@ func Run(opts ...Option) error {
 	}()
 
 	if !machine.SentinelExist("firstboot") {
-
+		fmt.Println("Running hooks")
 		if err := hook.Run(*c, hook.FirstBoot...); err != nil {
 			return err
 		}
@@ -73,6 +74,7 @@ func Run(opts ...Option) error {
 		bus.Reload()
 		err = machine.CreateSentinel("firstboot")
 		if c.FailOnBundleErrors && err != nil {
+			fmt.Println("error bundles", err.Error())
 			return err
 		}
 	}
