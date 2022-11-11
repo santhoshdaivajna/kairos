@@ -22,7 +22,7 @@ func SH(c string) (string, error) {
 	cmd := exec.Command("/bin/sh", "-c", c)
 	cmd.Env = os.Environ()
 	fmt.Println("command %s", c)
-	fmt.Println("environ %s", cmd.Environ())
+	fmt.Println("environ %s", os.Environ())
 	o, err := cmd.CombinedOutput()
 	return string(o), err
 }
