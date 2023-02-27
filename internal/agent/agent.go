@@ -31,6 +31,7 @@ func Run(opts ...Option) error {
 		return err
 	}
 
+	fmt.Println("command %s", c.Env)
 	utils.SetEnv(c.Env)
 	bf := machine.BootFrom()
 	if c.Install != nil && c.Install.Auto && (bf == machine.NetBoot || bf == machine.LiveCDBoot) {

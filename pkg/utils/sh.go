@@ -2,6 +2,8 @@ package utils
 
 import (
 	"bytes"
+
+	"fmt"
 	"os"
 	"os/exec"
 
@@ -19,6 +21,8 @@ func SHInDir(c, dir string) (string, error) {
 func SH(c string) (string, error) {
 	cmd := exec.Command("/bin/sh", "-c", c)
 	cmd.Env = os.Environ()
+	fmt.Println("command %s", c)
+	fmt.Println("environ %s", cmd.Environ())
 	o, err := cmd.CombinedOutput()
 	return string(o), err
 }
