@@ -3,7 +3,8 @@ package utils
 import (
 	"bytes"
 
-	"fmt"
+	"github.com/sirupsen/logrus"
+
 	"os"
 	"os/exec"
 
@@ -12,6 +13,8 @@ import (
 
 func SHInDir(c, dir string) (string, error) {
 	cmd := exec.Command("/bin/sh", "-c", c)
+	logrus.Infof("command %s %s", c, dir)
+	logrus.Infof("environ %s", os.Environ())
 	cmd.Env = os.Environ()
 	cmd.Dir = dir
 	o, err := cmd.CombinedOutput()
@@ -21,8 +24,8 @@ func SHInDir(c, dir string) (string, error) {
 func SH(c string) (string, error) {
 	cmd := exec.Command("/bin/sh", "-c", c)
 	cmd.Env = os.Environ()
-	fmt.Println("command %s", c)
-	fmt.Println("environ %s", os.Environ())
+	logrus.Infof("command %s", c)
+	logrus.Infof("environ %s", os.Environ())
 	o, err := cmd.CombinedOutput()
 	return string(o), err
 }
