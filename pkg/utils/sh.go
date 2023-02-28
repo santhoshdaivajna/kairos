@@ -21,7 +21,7 @@ func SHInDir(c, dir string) (string, error) {
 func SH(c string) (string, error) {
 	cmd := exec.Command("/bin/sh", "-c", c)
 	cmd.Env = os.Environ()
-	logrus.Infof("command %s")
+	logrus.Infof("command %s", c)
 	o, err := cmd.CombinedOutput()
 	return string(o), err
 }
