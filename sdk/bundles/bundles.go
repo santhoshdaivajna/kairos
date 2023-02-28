@@ -231,23 +231,26 @@ func (l *LuetInstaller) Install(config *BundleConfig) error {
 	if err != nil {
 		return err
 	}
-	out, err := utils.SH(
-		fmt.Sprintf(
-			`LUET_CONFIG_FROM_HOST=false luet repo add --system-dbpath %s --system-target %s kairos-system -y --description "Automatically generated kairos-system" --url "%s" --type "%s"`,
-			config.DBPath,
-			config.RootPath,
-			repo,
-			t,
-		),
-	)
-	if err != nil {
-		return fmt.Errorf("could not add repository: %w - %s", err, out)
+
+	if !config.Upgrade {
+		out, err := utils.SH(
+			fmt.Sprintf(
+				`LUET_CONFIG_FROM_HOST=false luet repo add --system-dbpath %s --system-target %s kairos-system -y --description "Automatically generated kairos-system" --url "%s" --type "%s"`,
+				config.DBPath,
+				config.RootPath,
+				repo,
+				t,
+			),
+		)
+		if err != nil {
+			return fmt.Errorf("could not add repository: %w - %s", err, out)
+		}
 	}
 
 	if config.Upgrade {
 		action = "upgrade"
 
-		out, err = utils.SH(
+		out, err := utils.SH(
 			`LUET_CONFIG_FROM_HOST=false luet repo update`,
 		)
 		if err != nil {
@@ -255,7 +258,7 @@ func (l *LuetInstaller) Install(config *BundleConfig) error {
 		}
 	}
 
-	out, err = utils.SH(
+	out, err := utils.SH(
 		fmt.Sprintf(
 			`LUET_CONFIG_FROM_HOST=false luet %s -y  --system-dbpath %s --system-target %s %s`,
 			action,
