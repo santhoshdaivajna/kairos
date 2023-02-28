@@ -220,8 +220,6 @@ type LuetInstaller struct{}
 
 func (l *LuetInstaller) Install(config *BundleConfig) error {
 
-	action := "install"
-
 	t, repo, err := config.extractRepo()
 	if err != nil {
 		return err
@@ -232,43 +230,36 @@ func (l *LuetInstaller) Install(config *BundleConfig) error {
 		return err
 	}
 
-	if !config.Upgrade {
-		out, err := utils.SH(
-			fmt.Sprintf(
-				`LUET_CONFIG_FROM_HOST=false luet repo add --system-dbpath %s --system-target %s kairos-system -y --description "Automatically generated kairos-system" --url "%s" --type "%s"`,
-				config.DBPath,
-				config.RootPath,
-				repo,
-				t,
-			),
-		)
-		if err != nil {
-			return fmt.Errorf("could not add repository: %w - %s", err, out)
-		}
-	}
-
-	if config.Upgrade {
-		action = "upgrade"
-
-		out, err := utils.SH(
-			`LUET_CONFIG_FROM_HOST=false luet repo update`,
-		)
-		if err != nil {
-			return fmt.Errorf("could not update repo: %w %s", err, out)
-		}
-	}
-
 	out, err := utils.SH(
 		fmt.Sprintf(
-			`LUET_CONFIG_FROM_HOST=false luet %s -y  --system-dbpath %s --system-target %s %s`,
-			action,
+			`LUET_CONFIG_FROM_HOST=false luet repo add --system-dbpath %s --system-target %s kairos-system -y --description "Automatically generated kairos-system" --url "%s" --type "%s"`,
+			config.DBPath,
+			config.RootPath,
+			repo,
+			t,
+		),
+	)
+	if err != nil {
+		return fmt.Errorf("could not add repository: %w - %s", err, out)
+	}
+
+	out, err = utils.SH(
+		`LUET_CONFIG_FROM_HOST=false luet repo update`,
+	)
+	if err != nil {
+		return fmt.Errorf("could not update repo: %w %s", err, out)
+	}
+
+	out, err = utils.SH(
+		fmt.Sprintf(
+			`LUET_CONFIG_FROM_HOST=false luet install -y  --system-dbpath %s --system-target %s %s`,
 			config.DBPath,
 			config.RootPath,
 			config.Target,
 		),
 	)
 	if err != nil {
-		return fmt.Errorf("could not %s bundle: %w - %s", action, err, out)
+		return fmt.Errorf("could not install bundle: %w - %s", err, out)
 	}
 
 	// copy bins to /usr/local/bin
