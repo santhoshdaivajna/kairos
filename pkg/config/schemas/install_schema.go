@@ -27,7 +27,6 @@ type BundleSchema struct {
 	Repository string   `json:"repository,omitempty"`
 	Rootfs     string   `json:"rootfs_path,omitempty"`
 	Targets    []string `json:"targets,omitempty"`
-	Upgrade    bool     `json:"upgrade,omitempty"`
 }
 
 // GrubOptionsSchema represents the grub options block which can be used in different places of the Kairos configuration. It is used to configure grub.

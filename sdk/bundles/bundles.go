@@ -20,7 +20,6 @@ type BundleConfig struct {
 	DBPath     string
 	RootPath   string
 	LocalFile  bool
-	Upgrade    bool
 }
 
 // BundleOption defines a configuration option for a bundle.
@@ -69,13 +68,6 @@ func WithTarget(p string) BundleOption {
 func WithLocalFile(p bool) BundleOption {
 	return func(bc *BundleConfig) error {
 		bc.LocalFile = p
-		return nil
-	}
-}
-
-func WithUpgrade(p bool) BundleOption {
-	return func(bc *BundleConfig) error {
-		bc.Upgrade = p
 		return nil
 	}
 }

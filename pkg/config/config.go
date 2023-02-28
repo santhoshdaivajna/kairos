@@ -62,7 +62,6 @@ type Bundle struct {
 	DB         string   `yaml:"db_path,omitempty"`
 	LocalFile  bool     `yaml:"local_file,omitempty"`
 	Targets    []string `yaml:"targets,omitempty"`
-	Upgrade    bool     `yaml:"upgrade,omitempty"`
 }
 
 const DefaultHeader = "#cloud-config"
@@ -92,9 +91,7 @@ func (b Bundles) Options() (res [][]bundles.BundleOption) {
 			if bundle.LocalFile {
 				opts = append(opts, bundles.WithLocalFile(true))
 			}
-			if bundle.Upgrade {
-				opts = append(opts, bundles.WithUpgrade(true))
-			}
+
 			res = append(res, opts)
 		}
 	}
